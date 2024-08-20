@@ -5,7 +5,7 @@
 This project was developed by us, **Team ECMAniacs**
 
 ## Resources
-- [PPT & Video](https://drive.google.com/drive/folders/1aS0KgTq3POjXm_beLDLxl32LeOfPOqr-)
+- [Drive Link](https://drive.google.com/drive/folders/1sx38nbAOOsHuqw3fFyKEvAOFRXqNAD5f)
 
 ## Team ECMAniacs
 - [Md Kaif](https://github.com/kaif-istan)
