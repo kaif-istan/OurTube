@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Contrail+One&display=swap');
+
+* {
+  font-family: 'Contrail One';
+  color: white;
+}
+
+body {
+  height: 100vh;
+}
+
+.chatbox {
+  height: 560px;
+}
+
+.disabled-link {
+  pointer-events: none;
+}
+
+.disabled-link button:disabled {
+  opacity: 0.3;
+}

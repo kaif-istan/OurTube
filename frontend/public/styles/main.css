@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Contrail+One&display=swap');
+
+*{
+    font-family: 'Contrail One', cursive;
+}
+
+body{
+    height: 100vh;
+}

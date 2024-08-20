@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devjam | App</title>
+  <style>
+    h1, h2 {
+      text-align: center;
+    }
+
+    #centerbox {
+      border: 1px solid black;
+      width: 80%;
+      margin: 2em auto;
+      height: 50vh;
+      padding-left: 0 1em;
+    }
+
+    #chatbox {
+      border-bottom: 1px solid black;
+      overflow: auto;
+      height: 90%;
+    }
+
+    #textbox {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #textbox input {
+      outline: none;
+      border: none;
+      font-size: 1.5rem;
+      flex: 1;
+    }
+
+    .meta {
+      color: grey;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .chat-r {
+      text-align: right;
+      font-size: 1.5rem;
+    }
+
+    .chat-l {
+      text-align: left;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1></h1>
+  <h2>Room code: </h2>
+  <p>
+    <a href="/"">Click Here</a>
+    to go back to the Homepage 
+  </p>
+
+  <div id="centerbox">
+    <div id="chatbox"></div>
+    <div id="textbox">
+      <input id="message" placeholder="Enter Message" type="text">
+      <button>Send</button>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    let name = `<%- name  %>`;
+    let room = `<%- room  %>`;
+    let type = `<%- type  %>`;
+    let admin = type === 'create';
+    let id;
+
+    $(document).ready(() => {
+      $('h1').html(`Welcome ${name}${admin ? ` (Admin)`: ``}`);
+      $('h2').append(room);
+    });
+    
+    // Letting server know that we joined and sending
+    // required info
+    socket.emit('enter', { name, room, type });
+
+    // Will happen if type mentioned by the user is create
+    socket.on('getRoom', r => {
+      room = r;
+      console.log(r);
+      $('h2').append(room.id);
+    });
+
+    // Will happen once for every user
+    socket.on('getID', socket_id => {
+      id = socket_id;
+      console.log(id);
+    });
+
+    // Will happen if type mentioned by the user is join
+    socket.on('validateRoom', check => {
+      // Means he tried to join a non-existent room
+      // so we kick him
+      if (!check)
+      {
+        alert('Please enter a valid room code!');
+        window.location = '/';
+      }
+    })
+
+    // Will happen if a new user joins our room
+    socket.on('userJoin', name => {
+      $('#chatbox').append(`<div class="meta">${name} has joined the room!</div>`);
+    });
+
+    // Will happen if the admin leaves our room
+    socket.on('adminLeave', ({ name, new_admin }) => {
+      $('#chatbox').append(`<div class="meta">Admin (${name}) has left the room!</div>`);
+
+      // We are the new admin
+      if (new_admin.id === id)
+      {
+        admin = true;
+        $('h1').html(`Welcome ${new_admin.name}${admin ? ` (Admin)`: ``}`);
+        $('#chatbox').append(`<div class="meta">You are the new admin!</div>`);
+      }
+      // Someone else is the new admin
+      else
+        $('#chatbox').append(`<div class="meta">${new_admin.name} is the new admin!</div>`);
+    });
+
+    // Will happen if a user leaves our room
+    socket.on('userLeave', name => {
+      $('#chatbox').append(`<div class="meta">${name} has left the room!</div>`);
+    });
+
+    // To send messages from client to server i.e when we send a message
+    $('#textbox button').click(e => {
+      let message = $('#textbox input').val();
+      if (message !== '')
+        socket.emit('chatSend', message);
+      $('#chatbox').append(`<div class="chat-r">${name}<br>${message}</div>`);
+    });
+
+    // Will happen when some other user from our room sends a message
+    socket.on('chatReceive', ({name, message}) => {
+      $('#chatbox').append(`<div class="chat-l">${name}<br>${message}</div>`);
+    });
+
+    console.log(name, room, type);
+  </script>
+</body>
+</html>

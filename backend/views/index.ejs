@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devjam | Home</title>
+</head>
+<body>
+  <h1 style="text-align: center;">Homepage</h1>
+  <form action="/app" method="POST">
+    <!-- Name of the user -->
+    <label>
+      Name:
+      <input type="text" name="name" />
+      <br />
+    </label>
+  
+    <!-- Room code the user wants to join -->
+    <!-- Only applicable if the user chooses type="join" -->
+    <label id="room-textbox" style="display: none;">
+      Room code:
+      <input type="text" name="room" value="" />
+      <br/>
+    </label>
+
+    <!-- The user gets to choose if he/she wants to join or create a room -->
+    <select name="type">
+      <option value="create" selected>Create Room</option>
+      <option value="join">Join Room</option>
+    </select>    
+    <button type="submit">Go</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script>
+    $(document).ready(() => {
+      // Enables/Disables room code input based on type chosen
+      $('select').change(e => {
+        if ($(e.target).val() === 'create')
+          $('#room-textbox').hide();
+        else
+          $('#room-textbox').show();
+      });
+    });
+  </script>
+</body>
+</html>
